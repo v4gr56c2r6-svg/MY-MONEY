@@ -1,1 +1,261 @@
-*{box-sizing:border-box}body{margin:0;background:#f2f6f3;color:#1d2b24;font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN",Meiryo,sans-serif;max-width:760px;margin:auto}header{background:#10231d;color:white;padding:20px;display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}header b{font-size:22px;letter-spacing:2px}header span{font-size:12px;color:#c5d3cb}main{padding:14px}.panel,article{background:white;border:1px solid #e0e9e3;border-radius:15px;padding:16px;margin:12px 0}h1{font-size:23px}h2{font-size:17px;margin-top:0}label{display:block;font-size:13px;font-weight:650;margin:12px 0}input,select{display:block;width:100%;padding:12px;border:1px solid #d3ded6;border-radius:9px;margin-top:6px;font:inherit}button{border:0;border-radius:9px;background:#176b4a;color:white;padding:11px 15px;font-weight:700;cursor:pointer}form>button{width:100%;margin-top:8px}nav{display:flex;gap:7px;margin:12px 0}nav button{flex:1;background:#dfe9e2;color:#31513f}nav button:focus{background:#176b4a;color:white}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.grid article{margin:0;display:flex;flex-direction:column;gap:8px;color:#69776e;font-size:13px}.grid strong{font-size:22px;color:#176b4a}.wide{grid-column:1/-1;background:#e7f2eb} .wide strong{font-size:27px}.error{color:#b42318;font-size:13px;min-height:16px}footer{text-align:center;color:#91a096;font-size:11px;padding:20px}p{border-bottom:1px solid #edf1ee;padding:8px 0;font-size:13px}p b{float:right}#logout{background:#ffffff25}@media(max-width:420px){main{padding:10px}.grid strong{font-size:19px}}
+
+* {
+  box-sizing: border-box;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+:root {
+  --navy: #101f3c;
+  --navy-light: #1d355d;
+  --blue: #4169a8;
+  --background: #f2f5fa;
+  --text: #17243a;
+  --muted: #77849a;
+  --border: #e2e8f1;
+  --white: #ffffff;
+}
+
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont,
+    "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+  max-width: 760px;
+  margin-inline: auto;
+  line-height: 1.6;
+}
+
+header {
+  background: linear-gradient(135deg, #101f3c, #243f6b);
+  color: white;
+  padding: 28px 22px;
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  box-shadow: 0 5px 20px #101f3c22;
+}
+
+header b {
+  font-size: 25px;
+  letter-spacing: 2px;
+}
+
+header span {
+  font-size: 12px;
+  color: #c5d2e8;
+}
+
+main {
+  padding: 18px;
+}
+
+.panel,
+article {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 20px;
+  margin: 14px 0;
+  box-shadow: 0 5px 18px #17243a08;
+}
+
+h1 {
+  font-size: 24px;
+  margin-top: 0;
+}
+
+h2 {
+  font-size: 17px;
+  margin-top: 0;
+  color: var(--navy);
+}
+
+label {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  margin: 16px 0;
+  color: var(--text);
+}
+
+input,
+select {
+  display: block;
+  width: 100%;
+  padding: 14px;
+  border: 1px solid #d9e1ed;
+  border-radius: 11px;
+  margin-top: 7px;
+  font: inherit;
+  background: #f9fbfe;
+  color: var(--text);
+}
+
+input:focus,
+select:focus {
+  outline: 2px solid #4169a855;
+  border-color: var(--blue);
+  background: white;
+}
+
+button {
+  border: 0;
+  border-radius: 11px;
+  background: var(--navy-light);
+  color: white;
+  padding: 13px 17px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+
+button:hover {
+  background: var(--blue);
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+button:focus-visible {
+  outline: 3px solid #7da5e8;
+  outline-offset: 3px;
+}
+
+form > button {
+  width: 100%;
+  margin-top: 8px;
+}
+
+nav {
+  display: flex;
+  gap: 8px;
+  margin: 18px 0 22px;
+}
+
+nav button {
+  flex: 1;
+  background: #e3eaf4;
+  color: var(--navy);
+  padding: 13px 5px;
+  border: 1px solid #dce5f1;
+}
+
+nav button:focus,
+nav button:hover {
+  background: var(--navy);
+  color: white;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.grid article {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.grid strong {
+  font-size: 25px;
+  color: var(--navy);
+  overflow-wrap: anywhere;
+}
+
+.wide {
+  grid-column: 1 / -1;
+  background: linear-gradient(135deg, #e7eef9, #f7f9fd);
+}
+
+.wide strong {
+  font-size: 30px;
+}
+
+.error {
+  color: #c03945;
+  font-size: 13px;
+  min-height: 16px;
+}
+
+p {
+  border-bottom: 1px solid #edf1f6;
+  padding: 11px 0;
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+p b {
+  float: right;
+}
+
+#logout {
+  background: #ffffff20;
+  border: 1px solid #ffffff40;
+}
+
+#logout:hover {
+  background: #ffffff35;
+}
+
+footer {
+  text-align: center;
+  color: #94a0b2;
+  font-size: 11px;
+  padding: 24px;
+}
+
+@media (max-width: 420px) {
+  main {
+    padding: 12px;
+  }
+
+  header {
+    padding: 22px 16px;
+  }
+
+  header b {
+    font-size: 22px;
+  }
+
+  header span {
+    font-size: 11px;
+  }
+
+  .grid {
+    gap: 9px;
+  }
+
+  .grid article {
+    padding: 15px;
+  }
+
+  .grid strong {
+    font-size: 21px;
+  }
+
+  .wide strong {
+    font-size: 26px;
+  }
+
+  nav {
+    gap: 5px;
+  }
+
+  nav button {
+    font-size: 12px;
+    padding: 12px 3px;
+  }
+}
