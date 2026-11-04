@@ -291,3 +291,46 @@ footer {
   grid-area: expense;
 }
 
+
+/* MY MONEY：近未来型ナビゲーション */
+nav {
+  display: flex;
+  gap: 8px;
+  padding: 7px;
+  background: #e5ebf5;
+  border: 1px solid #d8e1ef;
+  border-radius: 17px;
+}
+
+nav button {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  background: transparent;
+  color: #30415f;
+  padding: 14px 4px;
+  font-size: 13px;
+  font-weight: 700;
+  transition: all 0.2s ease;
+}
+
+/* マウス操作時 */
+nav button:hover {
+  background: #d5e0f2;
+  color: #10264a;
+}
+
+/* 選択中のメニュー */
+nav button.active {
+  background: linear-gradient(135deg, #101f3c, #31558a);
+  color: #ffffff;
+  border-color: #5878a9;
+  box-shadow: 0 4px 12px #102f5c35;
+}
+
+/* 押したとき */
+nav button:active {
+  transform: scale(0.96);
+}
+
