@@ -96,23 +96,7 @@ function
                           s=>{let a=s.docs.map(d=>({id:d.id,...d.data()}));
                               $("savingList").innerHTML=a.map(x=>`<p>${clean(x.name)}：${yen(x.current)} / ${yen(x.goal)}（${Math.min(100,Math.round(x.current/x.goal*100))}%） <button data-del-saving="${x.id}">削除</button></p>`).join("")||"登録はありません";
 
-$("homeSavings").innerHTML = a.map(x => {
-  const percent = Math.min(
-    100,
-    Math.round(Number(x.current) / Number(x.goal) * 100)
-  );
 
-  return `
-    <div class="home-saving-item">
-      <p>${clean(x.name)}</p>
-      <strong>${yen(x.current)} / ${yen(x.goal)}</strong>
-      <div class="saving-progress">
-        <div style="width:${percent}%"></div>
-      </div>
-      <small>達成率 ${percent}%</small>
-    </div>
-  `;
-}).join("") || "貯金目標はまだ登録されていません";
 
                               
                               $("savingList").querySelectorAll("[data-del-saving]").forEach(b=>b.onclick=()=>remove("savings",b.dataset.delSaving))},e=>err("savingError","読み込み失敗："+e.message)))}
