@@ -106,6 +106,15 @@
   </section>
 
   <section class="panel recent-records">
+
+    
+<section class="panel home-savings">
+  <h2>貯金の進捗</h2>
+  <div id="homeSavings">
+    貯金目標はまだ登録されていません
+  </div>
+</section>
+    
     <h2>最近の記録</h2>
     <div id="recent"></div>
   </section>
@@ -169,4 +178,110 @@
     記録一覧
   </h2>
   
-  <div id="txList"></div></section></section><section id="debts" class="view" hidden><section class="panel"><h2>借入先を登録</h2><form id="debtForm"><label>借入先<input id="debtName" required></label><label>現在残高（円）<input id="debtBalance" type="number" min="0" required></label><label>年利（%）<input id="debtRate" type="number" min="0" max="100" step=".01" required></label><label>毎月の返済額（円）<input id="debtPayment" type="number" min="0" required></label><button>保存</button><p id="debtError" class="error"></p></form></section><section class="panel"><h2>借入一覧</h2><div id="debtList"></div></section></section><section id="savings" class="view" hidden><section class="panel"><h2>貯金目標</h2><form id="savingForm"><label>目標名<input id="savingName" required></label><label>目標金額（円）<input id="goal" type="number" min="1" required></label><label>現在の貯金額（円）<input id="current" type="number" min="0" required></label><button>保存</button><p id="savingError" class="error"></p></form></section><section class="panel"><h2>目標一覧</h2><div id="savingList"></div></section></section></section></main><footer>MY MONEY · 個人用</footer><script type="module" src="app.js"></script></body></html>
+  <div id="txList">
+    
+  </div>
+</section>
+</section>
+        
+<section id="debts" class="view" hidden><section class="panel">
+  
+  <h2>
+    
+    借入先を登録
+  </h2>
+  
+<form id="debtForm">
+  <label>
+    借入先
+    <input id="debtName" required>
+  </label>
+  
+<label>
+  現在残高（円）
+  <input id="debtBalance" type="number" min="0" required>
+</label>
+  
+<label>
+  年利（%）
+  <input id="debtRate" type="number" min="0" max="100" step=".01" required>
+</label>
+  
+<label>
+  毎月の返済額（円）
+  <input id="debtPayment" type="number" min="0" required>
+</label>
+
+<button>
+  保存
+</button>
+  
+<p id="debtError" class="error">
+  
+</p>
+</form>
+</section>
+  
+<section class="panel">
+  <h2>
+    借入一覧
+  </h2>
+  <div id="debtList">
+    
+  </div>
+</section>
+</section>
+        
+<section id="savings" class="view" hidden>
+  <section class="panel">
+    <h2>
+      貯金目標
+    </h2>
+    
+<form id="savingForm">
+  <label>
+    目標名
+    <input id="savingName" required>
+  </label>
+  
+  <label>
+    目標金額（円）
+    <input id="goal" type="number" min="1" required>
+  </label>
+  
+  <label>
+    現在の貯金額（円）
+    <input id="current" type="number" min="0" required>
+  </label>
+  
+  <button>
+    保存
+  </button>
+  
+  <p id="savingError" class="error">
+      </p>
+</form>
+  </section>
+  
+  <section class="panel">
+    <h2>
+      目標一覧
+    </h2>
+    
+    <div id="savingList">
+      
+    </div>
+  </section>
+</section>
+      </section>
+      </main>
+
+<footer>
+  MY MONEY · 個人用
+  </footer>
+      
+<script type="module" src="app.js">
+  
+</script>
+    </body>
+</html>
