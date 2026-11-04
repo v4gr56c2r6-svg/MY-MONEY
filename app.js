@@ -63,7 +63,11 @@ document.querySelectorAll("nav button").forEach(b => {
 });
 
 // 最初はホームを選択状態にする
-document.querySelector('nav button[data-tab="home"]').classList.add("active");
+const homeButton = document.querySelector('nav button[data-tab="home"]');
+
+if (homeButton) {
+  homeButton.classList.add("active");
+}
 
 
 onAuthStateChanged
