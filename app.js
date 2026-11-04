@@ -27,10 +27,13 @@ $("debtList").
   
   querySelectorAll("[data-del-debt]").forEach(b=>b.onclick=()=>remove("debts",b.dataset.delDebt))},
 e=>err("debtError","読み込み失敗："+e.message)));
-    stops.push(onSnapshot(col("savings"),s=>{let a=s.docs.map(d=>({id:d.id,...d.data()}));$("savingList").innerHTML=a.map(x=>
-    `<p>${clean(x.name)}：${yen(x.current)} / ${yen(x.goal)}（${Math.min(100,Math.round(x.current/x.goal*100))}%） 
-    <button data-del-saving="${x.id}">削除</button></p>`).join("")||"登録はありません";
+    stops.push(onSnapshot(col("savings"),s=>{let a=s.docs.map(d=>({id:d.id,...d.data()}));
 
+$("savingList").innerHTML=a.map(x=>
+    `<p>${clean(x.name)}：${yen(x.current)} / ${yen(x.goal)}（${Math.min(100,Math.round(x.current/x.goal*100))}%）
+    <button data-edit-saving="${x.id}">金額を編集</button>
+    <button data-del-saving="${x.id}">削除</button></p>`).join("")||"登録はありません";
+                                             
 const homeSavings = $("homeSavings");
 
 if (homeSavings) {
@@ -53,7 +56,40 @@ if (homeSavings) {
     `;
   }).join("") || "貯金目標はまだ登録されていません";
 }
-$("savingList").querySelectorAll("[data-del-saving]").forEach(b=>b.onclick=()=>remove("savings",b.dataset.delSaving))},
+$("savingList").querySelectorAll("[data-edit-saving]").forEach(b=>{
+  b.onclick=async()=>{
+    const item=a.find(x=>x.id===b.dataset.editSaving);
+    if(!item)return;
+
+    const input=prompt(
+      "現在の貯金額を入力してください",
+      item.current
+    );
+
+    if(input===null)return;
+
+    const amount=Number(input);
+
+    if(input.trim()===""||!Number.isFinite(amount)||amount<0){
+      alert("0以上の正しい金額を入力してください");
+      return;
+    }
+
+    try{
+      await updateDoc(
+        doc(db,"users",user.uid,"savings",item.id),
+        {current:amount}
+      );
+      alert("貯金額を更新しました");
+    }catch(e){
+      alert("更新できませんでした。通信状態を確認してください。");
+    }
+  };
+});
+
+$("savingList").querySelectorAll("[data-del-saving]").forEach(b=>{
+  b.onclick=()=>remove("savings",b.dataset.delSaving);
+});},
                           e=>err("savingError","読み込み失敗："+e.message)))}
 function remove(c,id){if(confirm("削除しますか？"))deleteDoc(doc(db,"users",user.uid,c,id))}
 function drawTx(a){$("txList").innerHTML=a.map(x=>`<p>${clean(x.date)} · ${clean(x.category)} ${clean(x.memo)} <b>${x.type==="income"?"+":"−"}${yen(x.amount)}</b> <button data-del-tx="${x.id}">削除</button></p>`).join("")||"記録はありません";$("txList").querySelectorAll("[data-del-tx]").forEach(b=>b.onclick=()=>remove("transactions",b.dataset.delTx))}
