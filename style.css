@@ -269,27 +269,25 @@ footer {
 }
 
 #home .grid article:nth-child(1) {
-  grid-area: income;
-}
-
-#home .grid article:nth-child(2) {
-  grid-area: expense;
-}
-
-#home .grid article:nth-child(3) {
   grid-area: balance;
   background: linear-gradient(135deg, #101f3c, #294875);
   border: none;
   color: #c5d2e8;
   padding: 24px;
+  min-height: 150px;
+  justify-content: center;
 }
 
-#home .grid article:nth-child(3) strong {
+#home .grid article:nth-child(1) strong {
   color: white;
   font-size: 34px;
 }
 
-#home .grid article:nth-child(3) {
-  min-height: 150px;
-  justify-content: center;
+#home .grid article:nth-child(2) {
+  grid-area: income;
 }
+
+#home .grid article:nth-child(3) {
+  grid-area: expense;
+}
+
