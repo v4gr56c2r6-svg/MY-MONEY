@@ -4,7 +4,29 @@ function clean(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"
 $("loginForm").onsubmit=async e=>{e.preventDefault();err("loginError","");try{await signInWithEmailAndPassword(auth,$("email").value.trim(),$("password").value)}catch{err("loginError","ログインできません。入力内容を確認してください。")}};$("logout").onclick=()=>signOut(auth);
 document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{document.querySelectorAll(".view").forEach(v=>v.hidden=v.id!==b.dataset.tab)});
 onAuthStateChanged(auth,u=>{stops.forEach(f=>f());stops=[];user=u;$("login").hidden=!!u;$("app").hidden=!u;$("logout").hidden=!u;if(u)load()});
-function load(){stops.push(onSnapshot(query(col("transactions"),orderBy("date","desc")),s=>{let a=s.docs.map(d=>({id:d.id,...d.data()}));latestTransactions=a;drawTx(a);updateMonthTotals();$("recent").innerHTML=a.slice(0,5).map(x=>`<p>${clean(x.date)} · ${clean(x.category)} <b>${x.type==="income"?"+":"−"}${yen(x.amount)}</b></p>`).join("")||"記録はありません"},e=>err("txError","読み込み失敗："+e.message)));stops.push(onSnapshot(col("debts"),s=>{let a=s.docs.map(d=>({id:d.id,...d.data()}));$("debtTotal").textContent=yen(a.reduce((t,x)=>t+x.balance,0));$("debtList").innerHTML=a.map(x=>`<p>${clean(x.name)}：${yen(x.balance)}（年利${x.rate}%・月返済${yen(x.payment)}） <button data-del-debt="${x.id}">削除</button></p>`).join("")||"登録はありません";$("debtList").querySelectorAll("[data-del-debt]").forEach(b=>b.onclick=()=>remove("debts",b.dataset.delDebt))},e=>err("debtError","読み込み失敗："+e.message)));stops.push(onSnapshot(col("savings"),s=>{let a=s.docs.map(d=>({id:d.id,...d.data()}));$("savingList").innerHTML=a.map(x=>`<p>${clean(x.name)}：${yen(x.current)} / ${yen(x.goal)}（${Math.min(100,Math.round(x.current/x.goal*100))}%） <button data-del-saving="${x.id}">削除</button></p>`).join("")||"登録はありません";$("savingList").querySelectorAll("[data-del-saving]").forEach(b=>b.onclick=()=>remove("savings",b.dataset.delSaving))},e=>err("savingError","読み込み失敗："+e.message)))}
+function load(){stops.push(onSnapshot(query(col("transactions"),orderBy("date","desc")),s=>{let a=s.docs.map(d=>({id:d.id,...d.data()}));latestTransactions=a;drawTx(a);updateMonthTotals();$("recent").innerHTML=a.slice(0,5).map(x=>`<p>${clean(x.date)} · ${clean(x.category)} <b>${x.type==="income"?"+":"−"}${yen(x.amount)}</b></p>`).join("")||"記録はありません"},e=>err("txError","読み込み失敗："+e.message)));stops.push(onSnapshot(col("debts"),s=>{let a=s.docs.map(d=>({id:d.id,...d.data()}));$("debtTotal").textContent=yen(a.reduce((t,x)=>t+x.balance,0));$("debtList").innerHTML=a.map(x=>`<p>${clean(x.name)}：${yen(x.balance)}（年利${x.rate}%・月返済${yen(x.payment)}） <button data-del-debt="${x.id}">削除</button></p>`).join("")||"登録はありません";$("debtList").querySelectorAll("[data-del-debt]").forEach(b=>b.onclick=()=>remove("debts",b.dataset.delDebt))},e=>err("debtError","読み込み失敗："+e.message)));stops.push(onSnapshot(col("savings"),s=>{let a=s.docs.map(d=>({id:d.id,...d.data()}));$("savingList").innerHTML=a.map(x=>
+
+  $("homeSavings").innerHTML = a.map(x => {
+  const goal = Number(x.goal) || 0;
+  const current = Number(x.current) || 0;
+
+  const percent = goal > 0
+    ? Math.min(100, Math.max(0, Math.round(current / goal * 100)))
+    : 0;
+
+  return `
+    <div class="home-saving-item">
+      <p>${clean(x.name)}</p>
+      <strong>${yen(current)} / ${yen(goal)}</strong>
+      <div class="saving-progress">
+        <div style="width:${percent}%"></div>
+      </div>
+      <small>達成率 ${percent}%</small>
+    </div>
+  `;
+}).join("") || "貯金目標はまだ登録されていません";
+  
+  `<p>${clean(x.name)}：${yen(x.current)} / ${yen(x.goal)}（${Math.min(100,Math.round(x.current/x.goal*100))}%） <button data-del-saving="${x.id}">削除</button></p>`).join("")||"登録はありません";$("savingList").querySelectorAll("[data-del-saving]").forEach(b=>b.onclick=()=>remove("savings",b.dataset.delSaving))},e=>err("savingError","読み込み失敗："+e.message)))}
 function remove(c,id){if(confirm("削除しますか？"))deleteDoc(doc(db,"users",user.uid,c,id))}
 function drawTx(a){$("txList").innerHTML=a.map(x=>`<p>${clean(x.date)} · ${clean(x.category)} ${clean(x.memo)} <b>${x.type==="income"?"+":"−"}${yen(x.amount)}</b> <button data-del-tx="${x.id}">削除</button></p>`).join("")||"記録はありません";$("txList").querySelectorAll("[data-del-tx]").forEach(b=>b.onclick=()=>remove("transactions",b.dataset.delTx))}
 $("month").onchange=updateMonthTotals;function updateMonthTotals(){const m=$("month").value||today().slice(0,7),r=latestTransactions.filter(x=>(x.date||"").startsWith(m)),inc=r.filter(x=>x.type==="income").reduce((t,x)=>t+Number(x.amount||0),0),out=r.filter(x=>x.type==="expense").reduce((t,x)=>t+Number(x.amount||0),0);$("income").textContent=yen(inc);$("expense").textContent=yen(out);$("balance").textContent=yen(inc-out)}
