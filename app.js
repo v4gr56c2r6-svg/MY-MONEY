@@ -24,15 +24,51 @@ function
             updateMonthTotals();$("recent").innerHTML=a.slice(0,5).
               map(x=>`<p>${clean(x.date)} · ${clean(x.category)} 
               <b>${x.type==="income"?"+":"−"}${yen(x.amount)}</b></p>`).join("")||"記録はありません"},
-        e=>err("txError","読み込み失敗："+e.message)));stops.push(onSnapshot(col("debts"),
+        e=>err("txError","読み込み失敗："+e.message)));
+    stops.push(onSnapshot(col("debts"),
 s=>{let a=s.docs.map(d=>({id:d.id,...d.data()}));
     $("debtTotal").textContent=yen(a.reduce((t,x)=>t+x.balance,0));
+
     $("debtList").innerHTML=a.map(x=>`<p>${clean(x.name)}：${yen(x.balance)}
-    （年利${x.rate}%・月返済${yen(x.payment)}） 
+    （年利${x.rate}%・月返済${yen(x.payment)}）
+    <button data-edit-debt="${x.id}">残高を更新</button>
     <button data-del-debt="${x.id}">削除</button></p>`).join("")||"登録はありません";
-$("debtList"). 
-  
-  querySelectorAll("[data-del-debt]").forEach(b=>b.onclick=()=>remove("debts",b.dataset.delDebt))},
+
+$("debtList").querySelectorAll("[data-edit-debt]").forEach(b=>{
+  b.onclick=async()=>{
+    const item=a.find(x=>x.id===b.dataset.editDebt);
+    if(!item)return;
+
+    const input=prompt(
+      "現在の借入残高を入力してください",
+      item.balance
+    );
+
+    if(input===null)return;
+
+    const amount=Number(input);
+
+    if(input.trim()===""||!Number.isFinite(amount)||amount<0){
+      alert("0以上の正しい金額を入力してください");
+      return;
+    }
+
+    try{
+      await updateDoc(
+        doc(db,"users",user.uid,"debts",item.id),
+        {balance:amount}
+      );
+      alert("借入残高を更新しました");
+    }catch(e){
+      alert("更新できませんでした。通信状態を確認してください。");
+    }
+  };
+});
+
+$("debtList").querySelectorAll("[data-del-debt]").forEach(b=>{
+  b.onclick=()=>remove("debts",b.dataset.delDebt);
+});
+    
 e=>err("debtError","読み込み失敗："+e.message)));
     stops.push(onSnapshot(col("savings"),s=>{let a=s.docs.map(d=>({id:d.id,...d.data()}));
 
