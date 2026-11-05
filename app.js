@@ -20,9 +20,13 @@ function
        (query(col("transactions"),
               orderBy("date","desc")),
         s=>{let a=s.docs.map(d=>({id:d.id,...d.data()}));
+
             latestTransactions=a;drawTx(a);
-            updateMonthTotals();$("recent").innerHTML=a.slice(0,5).
-              map(x=>`<p>${clean(x.date)} · ${clean(x.category)} 
+updateMonthTotals();
+renderMonthlyChart(a);
+$("recent").innerHTML=a.slice(0,5).
+            
+            map(x=>`<p>${clean(x.date)} · ${clean(x.category)} 
               <b>${x.type==="income"?"+":"−"}${yen(x.amount)}</b></p>`).join("")||"記録はありません"},
         e=>err("txError","読み込み失敗："+e.message)));
     stops.push(onSnapshot(col("debts"),
@@ -137,6 +141,70 @@ $("savingList").querySelectorAll("[data-del-saving]").forEach(b=>{
 function remove(c,id){if(confirm("削除しますか？"))deleteDoc(doc(db,"users",user.uid,c,id))}
 function drawTx(a){$("txList").innerHTML=a.map(x=>`<p>${clean(x.date)} · ${clean(x.category)} ${clean(x.memo)} <b>${x.type==="income"?"+":"−"}${yen(x.amount)}</b> <button data-del-tx="${x.id}">削除</button></p>`).join("")||"記録はありません";$("txList").querySelectorAll("[data-del-tx]").forEach(b=>b.onclick=()=>remove("transactions",b.dataset.delTx))}
 $("month").onchange=updateMonthTotals;function updateMonthTotals(){const m=$("month").value||today().slice(0,7),r=latestTransactions.filter(x=>(x.date||"").startsWith(m)),inc=r.filter(x=>x.type==="income").reduce((t,x)=>t+Number(x.amount||0),0),out=r.filter(x=>x.type==="expense").reduce((t,x)=>t+Number(x.amount||0),0);$("income").textContent=yen(inc);$("expense").textContent=yen(out);$("balance").textContent=yen(inc-out)}
+
+function renderMonthlyChart(transactions){
+  const chart=$("monthChart");
+  if(!chart)return;
+
+  const now=new Date();
+  const months=[];
+
+  for(let i=5;i>=0;i--){
+    const date=new Date(
+      now.getFullYear(),
+      now.getMonth()-i,
+      1
+    );
+
+    const key=
+      date.getFullYear()+"-"+
+      String(date.getMonth()+1).padStart(2,"0");
+
+    const income=transactions
+      .filter(x=>(x.date||"").startsWith(key)&&x.type==="income")
+      .reduce((sum,x)=>sum+Number(x.amount||0),0);
+
+    const expense=transactions
+      .filter(x=>(x.date||"").startsWith(key)&&x.type==="expense")
+      .reduce((sum,x)=>sum+Number(x.amount||0),0);
+
+    months.push({
+      label:(date.getMonth()+1)+"月",
+      income,
+      expense
+    });
+  }
+
+  const max=Math.max(
+    1,
+    ...months.map(x=>Math.max(x.income,x.expense))
+  );
+
+  chart.innerHTML=months.map(x=>`
+    <div class="chart-month">
+      <strong>${x.label}</strong>
+
+      <div class="chart-row">
+        <span>収入</span>
+        <div class="chart-track">
+          <div class="chart-income"
+            style="width:${x.income/max*100}%"></div>
+        </div>
+        <small>${yen(x.income)}</small>
+      </div>
+
+      <div class="chart-row">
+        <span>支出</span>
+        <div class="chart-track">
+          <div class="chart-expense"
+            style="width:${x.expense/max*100}%"></div>
+        </div>
+        <small>${yen(x.expense)}</small>
+      </div>
+    </div>
+  `).join("");
+}
+
 $("txForm").onsubmit=async e=>{e.preventDefault();err("txError","");try{await addDoc(col("transactions"),{type:$("type").value,date:$("date").value,amount:Number($("amount").value),category:$("category").value.trim(),memo:$("memo").value.trim(),createdAt:serverTimestamp()});$("txForm").reset();$("date").value=today()}catch(x){err("txError","保存できませんでした。通信状態とルールを確認してください。")}};
 $("debtForm").onsubmit=async e=>{e.preventDefault();try{await addDoc(col("debts"),{name:$("debtName").value.trim(),balance:Number($("debtBalance").value),rate:Number($("debtRate").value),payment:Number($("debtPayment").value),createdAt:serverTimestamp()});$("debtForm").reset();err("debtError","")}catch{err("debtError","保存できませんでした。")}};
 $("savingForm").onsubmit=async e=>{e.preventDefault();try{await addDoc(col("savings"),{name:$("savingName").value.trim(),goal:Number($("goal").value),current:Number($("current").value),createdAt:serverTimestamp()});$("savingForm").reset();err("savingError","")}catch{err("savingError","保存できませんでした。")}};
