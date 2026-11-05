@@ -68,7 +68,7 @@ $("debtList").querySelectorAll("[data-edit-debt]").forEach(b=>{
 $("debtList").querySelectorAll("[data-del-debt]").forEach(b=>{
   b.onclick=()=>remove("debts",b.dataset.delDebt);
 });
-    
+   },
 e=>err("debtError","読み込み失敗："+e.message)));
     stops.push(onSnapshot(col("savings"),s=>{let a=s.docs.map(d=>({id:d.id,...d.data()}));
 
