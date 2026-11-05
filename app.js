@@ -1,7 +1,14 @@
-
-import{getFirestore,collection,addDoc,onSnapshot,query,orderBy,doc,deleteDoc,updateDoc,serverTimestamp}from"https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
-import{getAuth,onAuthStateChanged,signInWithEmailAndPassword,signOut}from"https://www.gstatic.com/firebasejs/13.2.0/firebase-auth.js";import{getFirestore,collection,addDoc,onSnapshot,query,orderBy,doc,deleteDoc,serverTimestamp}from"https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
-const cfg={apiKey:"AIzaSyDXvDTZboOUkIr7bJ1C956KUu1v_jSmGhg",authDomain:"my-money-d2e37.firebaseapp.com",projectId:"my-money-d2e37",storageBucket:"my-money-d2e37.firebasestorage.app",messagingSenderId:"877511100946",appId:"1:877511100946:web:d601582afb9d4e725666cb"};const app=initializeApp(cfg),auth=getAuth(app),db=getFirestore(app),$=id=>document.getElementById(id);let user,stops=[],latestTransactions=[];const yen=n=>"¥"+Number(n||0).toLocaleString("ja-JP"),today=()=>new Date().toLocaleDateString("sv-SE"),col=n=>collection(db,"users",user.uid,n);$("month").value=today().slice(0,7);$("date").value=today();
+import{initializeApp}from"https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js";
+import{getAuth,onAuthStateChanged,signInWithEmailAndPassword,signOut}from"https://www.gstatic.com/firebasejs/13.2.0/firebase-auth.js";
+import{getFirestore,collection,addDoc,onSnapshot,query,orderBy,doc,deleteDoc,updateDoc,serverTimestamp}
+  from"https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
+const cfg={apiKey:"AIzaSyDXvDTZboOUkIr7bJ1C956KUu1v_jSmGhg",
+           authDomain:"my-money-d2e37.firebaseapp.com",
+           projectId:"my-money-d2e37",
+           storageBucket:"my-money-d2e37.firebasestorage.app",
+           messagingSenderId:"877511100946",
+           appId:"1:877511100946:web:d601582afb9d4e725666cb"};
+const app=initializeApp(cfg),auth=getAuth(app),db=getFirestore(app),$=id=>document.getElementById(id);let user,stops=[],latestTransactions=[];const yen=n=>"¥"+Number(n||0).toLocaleString("ja-JP"),today=()=>new Date().toLocaleDateString("sv-SE"),col=n=>collection(db,"users",user.uid,n);$("month").value=today().slice(0,7);$("date").value=today();
 function clean(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}function err(id,msg){$(id).textContent=msg}
 $("loginForm").onsubmit=async e=>{e.preventDefault();err("loginError","");try{await signInWithEmailAndPassword(auth,$("email").value.trim(),$("password").value)}catch{err("loginError","ログインできません。入力内容を確認してください。")}};$("logout").onclick=()=>signOut(auth);
 document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{document.querySelectorAll(".view").forEach(v=>v.hidden=v.id!==b.dataset.tab)});
